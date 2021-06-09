@@ -1,3 +1,6 @@
+# Run Command:
+# mpiexec --allow-run-as-root -n 2 python temp.py
+
 import torch
 import torch.distributed as dist
 def main(rank, world):
