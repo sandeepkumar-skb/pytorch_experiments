@@ -23,3 +23,5 @@
 | FP32, NCHW  | 10.42  |
 | FP16, NHWC   | 14.11 |
 | FP16, NCHW   | 13.43 |
+| TRT FP32, NCHW | 2.29 |
+| TRT FP16, NCHW | 1.09 |
