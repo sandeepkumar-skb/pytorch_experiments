@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision.models as models
 import time as time
+from torch2trt import torch2trt
 torch.backends.cudnn.benchmark=True
 
 
@@ -11,11 +12,18 @@ use_nhwc=True
 dtype=torch.float32
 inference_mode=False
 batch_size=128
+enable_trt=False
 
 
 def run_inference(model, inp):
     print("Running Inference")
     model.eval().cuda()
+    
+    if enable_trt:
+        print("Creating TRT Engine ......")
+        model = torch2trt(model, [inp], fp16_mode=True)
+        print("Created TRT Engine")
+    
     if dtype == torch.half:
         print("Converting model to half")
         print("Input type: {}".format(inp.dtype))
