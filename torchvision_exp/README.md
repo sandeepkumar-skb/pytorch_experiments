@@ -15,7 +15,7 @@
 ### Inference
 * batch_size - 1
 * GPU - Tesla V100-SXM2
-* FP16 mode - model and inputs are casted to `model.half`
+* FP16 mode - model and inputs are casted to `model.half` except for TensorRT fp16
 
 | Setting  | Iteration Time(ms) |
 | ------------- | ------------- |
