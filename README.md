@@ -5,5 +5,3 @@
     - `torch.nn.intrinsic.qat` - https://pytorch.org/docs/1.7.1/torch.nn.intrinsic.qat.html?highlight=torch%20nn%20qat#module-torch.nn.intrinsic.qat
     - `torch.nn.qat` - https://pytorch.org/docs/stable/torch.nn.qat.html
 
-`how are` you doing
-  
