@@ -1,15 +1,27 @@
+import torch
+import torch.nn as nn
+from checker import checker
+from minmaxobserver import MinMaxObserver
+
+class QConv2d(nn.Conv2d):
+    def __init__(self, *args, activation=nn.ReLU(inplace=True), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.activation = activation
+        self.fq_node = torch.quantization.FakeQuantize(observer=MinMaxObserver)
+
+    def forward(self, x):
+        qweight = self.fq_node(self.weight)
+        return self.activation(self._conv_forward(x, qweight, self.bias))
+
 # define a floating point model where some layers could be statically quantized
 class M(torch.nn.Module):
     def __init__(self):
         super(M, self).__init__()
-        self.conv = torch.nn.intrinsic.qat.ConvReLU2d(1, 1, 1, qconfig=torch.quantization.QConfig(activation=torch.quantization.MinMaxObserver.with_args(dtype=torch.qint8), weight=torch.quantization.default_observer.with_args(dtype=torch.qint8)))
+        self.conv = QConv2d(1, 1, 1, activation=torch.nn.ReLU(inplace=True))
 
     def forward(self, x):
-        # manually specify where tensors will be converted from floating
-        # point to quantized in the quantized model
         x = self.conv(x)
-        # manually specify where tensors will be converted from quantized
-        # to floating point in the quantized model
+        x = self.conv(x)
         return x
 
 # create a model instance
@@ -19,8 +31,5 @@ model_fp32 = M()
 model_fp32.eval().cuda()
 input_fp32 = torch.randn(4, 1, 4, 4).cuda()
 res = model_fp32(input_fp32)
-torch.onnx.export(model_fp32, input_fp32, "model_qat.onnx", opset_version=13)
-print(model_fp32)
-
-model_jit = torch.jit.script(model_fp32)
-torch.jit.save(model_jit, "model_jit.pth")
+print("Eval Done")
+checker(model_fp32, input_fp32)
