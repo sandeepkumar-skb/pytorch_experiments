@@ -8,12 +8,12 @@ def checker(model, inp):
     jit_trace_convert = "PASS"
 
     try:
-        torch.onnx.export(model, inp, "model_nvqat_op10.onnx", opset_version=10)
+        torch.onnx.export(model, inp, "model_op10.onnx", opset_version=10)
     except:
         onnx_op10_convert = "FAIL"
 
     try:
-        torch.onnx.export(model, inp, "model_nvqat_op13.onnx", opset_version=13)
+        torch.onnx.export(model, inp, "model_op13.onnx", opset_version=13)
     except:
         onnx_op13_convert = "FAIL"
 
