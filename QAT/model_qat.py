@@ -7,7 +7,10 @@ class QConv2d(nn.Conv2d):
     def __init__(self, *args, activation=nn.ReLU(inplace=True), **kwargs):
         super().__init__(*args, **kwargs)
         self.activation = activation
-        self.fq_node = torch.quantization.FakeQuantize(observer=MinMaxObserver)
+        self.fq_node = torch.quantization.FakeQuantize(observer=MinMaxObserver.with_args(qscheme = torch.per_tensor_symmetric, dtype=torch.qint8), 
+                                                       quant_min=-128,
+                                                       quant_max=127
+                                                      )
 
     def forward(self, x):
         qweight = self.fq_node(self.weight)
